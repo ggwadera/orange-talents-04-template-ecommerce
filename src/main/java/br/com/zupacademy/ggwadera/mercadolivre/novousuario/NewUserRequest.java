@@ -1,7 +1,6 @@
 package br.com.zupacademy.ggwadera.mercadolivre.novousuario;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import br.com.zupacademy.ggwadera.mercadolivre.util.validation.UniqueValue;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -11,6 +10,7 @@ public class NewUserRequest {
 
     @NotBlank
     @Email
+    @UniqueValue(domainClass = User.class, fieldName = "login")
     private String login;
 
     @NotBlank
