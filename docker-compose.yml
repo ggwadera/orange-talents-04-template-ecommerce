@@ -1,0 +1,14 @@
+services:
+  mariadb:
+    image: yobasystems/alpine-mariadb:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ecommerce
+    ports:
+      - 3306:3306
+    volumes:
+      - ecommerce:/var/lib/mysql
+
+volumes:
+  ecommerce:
