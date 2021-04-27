@@ -6,7 +6,6 @@ import br.com.zupacademy.ggwadera.mercadolivre.util.validation.UniqueValue;
 import javax.persistence.EntityManager;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
-import java.util.Optional;
 
 public class NewCategoryRequest {
 
