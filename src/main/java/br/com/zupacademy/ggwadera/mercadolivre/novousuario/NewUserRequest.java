@@ -10,19 +10,19 @@ public class NewUserRequest {
 
     @NotBlank
     @Email
-    @UniqueValue(domainClass = User.class, fieldName = "login")
-    private String login;
+    @UniqueValue(domainClass = User.class, fieldName = "email")
+    private String email;
 
     @NotBlank
     @Size(min = 6)
     private String password;
 
-    public String getLogin() {
-        return login;
+    public String getEmail() {
+        return email;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {
@@ -34,6 +34,6 @@ public class NewUserRequest {
     }
 
     public User toModel() {
-        return new User(login, new PlaintextPassword(password));
+        return new User(email, new PlaintextPassword(password));
     }
 }

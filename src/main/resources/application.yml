@@ -12,3 +12,11 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+server:
+  error:
+    include-stacktrace: never
+
+jwt:
+  secret: 2zQoVpH4avwj6vD0hUvnpMtgnGFTz8xxcKBiL14cnaY=
+  expiration: 900000
