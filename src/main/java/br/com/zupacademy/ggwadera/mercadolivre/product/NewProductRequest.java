@@ -57,9 +57,7 @@ public class NewProductRequest {
             .withValue(value)
             .withQuantity(quantity)
             .withDescription(description)
-            .withFeatures(features.stream()
-                .map(NewProductFeatureRequest::toModel)
-                .collect(Collectors.toSet()))
+            .withFeatures(features)
             .withCategory(category)
             .withUser(user)
             .build();

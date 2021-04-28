@@ -1,5 +1,7 @@
 package br.com.zupacademy.ggwadera.mercadolivre.product.feature;
 
+import br.com.zupacademy.ggwadera.mercadolivre.product.Product;
+
 import javax.validation.constraints.NotBlank;
 
 public class NewProductFeatureRequest {
@@ -26,7 +28,7 @@ public class NewProductFeatureRequest {
         this.description = description;
     }
 
-    public ProductFeature toModel() {
-        return new ProductFeature(name, description);
+    public ProductFeature toModel(Product product) {
+        return new ProductFeature(name, description, product);
     }
 }

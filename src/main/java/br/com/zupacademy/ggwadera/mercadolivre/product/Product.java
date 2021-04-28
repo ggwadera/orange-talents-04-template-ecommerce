@@ -1,13 +1,15 @@
 package br.com.zupacademy.ggwadera.mercadolivre.product;
 
 import br.com.zupacademy.ggwadera.mercadolivre.category.Category;
+import br.com.zupacademy.ggwadera.mercadolivre.product.feature.NewProductFeatureRequest;
 import br.com.zupacademy.ggwadera.mercadolivre.product.feature.ProductFeature;
 import br.com.zupacademy.ggwadera.mercadolivre.user.User;
 import org.springframework.util.Assert;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.Set;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 @Entity
 public class Product {
@@ -31,9 +33,8 @@ public class Product {
     @ManyToOne(optional = false)
     private Category category;
 
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = "product_id", nullable = false)
-    private Set<ProductFeature> features;
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "product")
+    private Collection<ProductFeature> features;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private User user;
@@ -44,7 +45,7 @@ public class Product {
         private Integer quantity;
         private String description;
         private Category category;
-        private Set<ProductFeature> features;
+        private Collection<NewProductFeatureRequest> features;
         private User user;
 
         public Builder() {}
@@ -74,7 +75,7 @@ public class Product {
             return this;
         }
 
-        public Builder withFeatures(Set<ProductFeature> features) {
+        public Builder withFeatures(Collection<NewProductFeatureRequest> features) {
             this.features = features;
             return this;
         }
@@ -102,8 +103,8 @@ public class Product {
             product.quantity = this.quantity;
             product.description = this.description;
             product.category = this.category;
-            product.features = this.features;
             product.user = this.user;
+            product.features = this.features.stream().map(f -> f.toModel(product)).collect(Collectors.toSet());
             return product;
         }
     }
