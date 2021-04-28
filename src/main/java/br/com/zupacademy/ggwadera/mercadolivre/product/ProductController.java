@@ -4,10 +4,8 @@ import br.com.zupacademy.ggwadera.mercadolivre.security.AuthenticatedUser;
 import br.com.zupacademy.ggwadera.mercadolivre.user.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -21,6 +19,11 @@ public class ProductController {
 
     @PersistenceContext
     private EntityManager manager;
+
+    @InitBinder
+    public void init(WebDataBinder binder) {
+        binder.addValidators(new DistinctFeatureNameValidator());
+    }
 
     @PostMapping
     public ResponseEntity<Void> newProduct(@RequestBody @Valid NewProductRequest request, @AuthenticationPrincipal

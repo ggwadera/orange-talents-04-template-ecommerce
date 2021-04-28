@@ -12,7 +12,10 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class NewProductRequest {
@@ -38,16 +41,40 @@ public class NewProductRequest {
 
     @NotNull
     @Size(min = 3)
-    private final Set<@Valid NewProductFeatureRequest> features;
+    private final List<@Valid NewProductFeatureRequest> features;
 
     public NewProductRequest(String name, BigDecimal value, Integer quantity, String description, Long categoryId,
-        Set<@Valid NewProductFeatureRequest> features) {
+        List<@Valid NewProductFeatureRequest> features) {
         this.name = name;
         this.value = value;
         this.quantity = quantity;
         this.description = description;
         this.categoryId = categoryId;
         this.features = features;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public BigDecimal getValue() {
+        return value;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Long getCategoryId() {
+        return categoryId;
+    }
+
+    public List<NewProductFeatureRequest> getFeatures() {
+        return features;
     }
 
     public Product toModel(EntityManager manager, User user) {
@@ -61,5 +88,14 @@ public class NewProductRequest {
             .withCategory(category)
             .withUser(user)
             .build();
+    }
+
+    public Set<String> findDuplicatedFeatures() {
+        return features.stream().map(NewProductFeatureRequest::getName)
+            .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+            .entrySet().stream()
+            .filter(e -> e.getValue() > 1)
+            .map(Map.Entry::getKey)
+            .collect(Collectors.toSet());
     }
 }
