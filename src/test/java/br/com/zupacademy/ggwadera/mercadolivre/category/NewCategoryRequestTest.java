@@ -1,4 +1,4 @@
-package br.com.zupacademy.ggwadera.mercadolivre.novacategoria;
+package br.com.zupacademy.ggwadera.mercadolivre.category;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

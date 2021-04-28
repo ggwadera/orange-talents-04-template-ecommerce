@@ -1,4 +1,4 @@
-package br.com.zupacademy.ggwadera.mercadolivre.novacategoria;
+package br.com.zupacademy.ggwadera.mercadolivre.category;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

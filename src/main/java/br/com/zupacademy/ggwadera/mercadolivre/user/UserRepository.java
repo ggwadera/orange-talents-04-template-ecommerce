@@ -1,4 +1,4 @@
-package br.com.zupacademy.ggwadera.mercadolivre.novousuario;
+package br.com.zupacademy.ggwadera.mercadolivre.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

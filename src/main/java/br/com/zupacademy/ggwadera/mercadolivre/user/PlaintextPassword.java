@@ -1,4 +1,4 @@
-package br.com.zupacademy.ggwadera.mercadolivre.novousuario;
+package br.com.zupacademy.ggwadera.mercadolivre.user;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.util.Assert;

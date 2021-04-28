@@ -1,4 +1,4 @@
-package br.com.zupacademy.ggwadera.mercadolivre.novacategoria;
+package br.com.zupacademy.ggwadera.mercadolivre.category;
 
 import br.com.zupacademy.ggwadera.mercadolivre.util.validation.ExistsById;
 import br.com.zupacademy.ggwadera.mercadolivre.util.validation.UniqueValue;

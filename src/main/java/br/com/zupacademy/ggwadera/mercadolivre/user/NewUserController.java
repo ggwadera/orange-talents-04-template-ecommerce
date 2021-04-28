@@ -1,4 +1,4 @@
-package br.com.zupacademy.ggwadera.mercadolivre.novousuario;
+package br.com.zupacademy.ggwadera.mercadolivre.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

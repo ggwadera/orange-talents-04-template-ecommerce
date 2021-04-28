@@ -1,4 +1,4 @@
-package br.com.zupacademy.ggwadera.mercadolivre.novousuario;
+package br.com.zupacademy.ggwadera.mercadolivre.user;
 
 import br.com.zupacademy.ggwadera.mercadolivre.util.validation.UniqueValue;
 

@@ -1,6 +1,6 @@
 package br.com.zupacademy.ggwadera.mercadolivre.security;
 
-import br.com.zupacademy.ggwadera.mercadolivre.novousuario.User;
+import br.com.zupacademy.ggwadera.mercadolivre.user.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
