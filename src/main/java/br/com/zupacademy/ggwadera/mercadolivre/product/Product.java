@@ -3,12 +3,16 @@ package br.com.zupacademy.ggwadera.mercadolivre.product;
 import br.com.zupacademy.ggwadera.mercadolivre.category.Category;
 import br.com.zupacademy.ggwadera.mercadolivre.product.feature.NewProductFeatureRequest;
 import br.com.zupacademy.ggwadera.mercadolivre.product.feature.ProductFeature;
+import br.com.zupacademy.ggwadera.mercadolivre.product.picture.ProductPicture;
 import br.com.zupacademy.ggwadera.mercadolivre.user.User;
 import org.springframework.util.Assert;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Entity
@@ -34,10 +38,45 @@ public class Product {
     private Category category;
 
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "product")
-    private Collection<ProductFeature> features;
+    private Set<ProductFeature> features;
+
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "product")
+    private Set<ProductPicture> pictures = new HashSet<>();
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private User user;
+
+    public boolean belongsTo(User user) {
+        return this.user.equals(user);
+    }
+
+    public void addPictures(Collection<String> picturesUri) {
+        Set<ProductPicture> pictures = picturesUri.stream()
+            .map(uri -> new ProductPicture(uri, this))
+            .collect(Collectors.toSet());
+        this.pictures.addAll(pictures);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return id.equals(product.getId()) && name.equals(product.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
+    }
 
     public static final class Builder {
         private String name;
