@@ -1,5 +1,6 @@
 package br.com.zupacademy.ggwadera.mercadolivre.product;
 
+import br.com.zupacademy.ggwadera.mercadolivre.product.opinion.NewOpinionRequest;
 import br.com.zupacademy.ggwadera.mercadolivre.product.picture.NewPicturesRequest;
 import br.com.zupacademy.ggwadera.mercadolivre.product.picture.Uploader;
 import br.com.zupacademy.ggwadera.mercadolivre.security.AuthenticatedUser;
@@ -49,16 +50,33 @@ public class ProductController {
     public ResponseEntity<Void> addPictures(@PathVariable Long id, @Valid NewPicturesRequest request,
         @AuthenticationPrincipal AuthenticatedUser authenticatedUser) {
         User user = authenticatedUser.getUser();
-        Product product = Optional.ofNullable(manager.find(Product.class, id))
-            .orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND,
-                "Não existe um produto com a id " + id
-            ));
+        Product product = findProductById(id);
         if (!product.belongsTo(user)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Acesso negado");
         }
         product.addPictures(uploader.upload(request.getPictures()));
         manager.merge(product);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{id}/opinioes")
+    public ResponseEntity<Void> addOpinion(@PathVariable Long id, @RequestBody NewOpinionRequest request,
+        @AuthenticationPrincipal AuthenticatedUser authenticatedUser) {
+        User user = authenticatedUser.getUser();
+        Product product = findProductById(id);
+        if (product.belongsTo(user)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Não pode opinar sobre o próprio produto.");
+        }
+        product.addOpinion(request.toModel(user, product));
+        manager.merge(product);
+        return ResponseEntity.ok().build();
+    }
+
+    private Product findProductById(Long id) {
+        return Optional.ofNullable(manager.find(Product.class, id))
+            .orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "Não existe um produto com a id " + id
+            ));
     }
 }

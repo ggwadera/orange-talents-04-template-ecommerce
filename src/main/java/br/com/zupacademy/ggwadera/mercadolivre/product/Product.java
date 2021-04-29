@@ -3,6 +3,7 @@ package br.com.zupacademy.ggwadera.mercadolivre.product;
 import br.com.zupacademy.ggwadera.mercadolivre.category.Category;
 import br.com.zupacademy.ggwadera.mercadolivre.product.feature.NewProductFeatureRequest;
 import br.com.zupacademy.ggwadera.mercadolivre.product.feature.ProductFeature;
+import br.com.zupacademy.ggwadera.mercadolivre.product.opinion.ProductOpinion;
 import br.com.zupacademy.ggwadera.mercadolivre.product.picture.ProductPicture;
 import br.com.zupacademy.ggwadera.mercadolivre.user.User;
 import org.springframework.util.Assert;
@@ -43,6 +44,9 @@ public class Product {
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "product")
     private Set<ProductPicture> pictures = new HashSet<>();
 
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "product")
+    private Set<ProductOpinion> opinions = new HashSet<>();
+
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private User user;
 
@@ -55,6 +59,10 @@ public class Product {
             .map(uri -> new ProductPicture(uri, this))
             .collect(Collectors.toSet());
         this.pictures.addAll(pictures);
+    }
+
+    public void addOpinion(ProductOpinion opinion) {
+        this.opinions.add(opinion);
     }
 
     public Long getId() {
