@@ -24,59 +24,66 @@ import java.util.Optional;
 @Transactional
 public class ProductController {
 
-    private final Uploader uploader;
+  private final Uploader uploader;
 
-    @PersistenceContext
-    private EntityManager manager;
+  @PersistenceContext private EntityManager manager;
 
-    @Autowired
-    public ProductController(Uploader uploader) {this.uploader = uploader;}
+  @Autowired
+  public ProductController(Uploader uploader) {
+    this.uploader = uploader;
+  }
 
-    @InitBinder(value = "newProduct")
-    public void init(WebDataBinder binder) {
-        binder.addValidators(new DistinctFeatureNameValidator());
+  @InitBinder(value = "newProduct")
+  public void init(WebDataBinder binder) {
+    binder.addValidators(new DistinctFeatureNameValidator());
+  }
+
+  @PostMapping
+  public ResponseEntity<Void> newProduct(
+      @RequestBody @Valid NewProductRequest request,
+      @AuthenticationPrincipal AuthenticatedUser authenticatedUser) {
+    User user = authenticatedUser.getUser();
+    Product product = request.toModel(manager, user);
+    manager.persist(product);
+    return ResponseEntity.ok().build();
+  }
+
+  @PostMapping("/{id}/imagens")
+  public ResponseEntity<Void> addPictures(
+      @PathVariable Long id,
+      @Valid NewPicturesRequest request,
+      @AuthenticationPrincipal AuthenticatedUser authenticatedUser) {
+    User user = authenticatedUser.getUser();
+    Product product = findProductById(id);
+    if (!product.belongsTo(user)) {
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Acesso negado");
     }
+    product.addPictures(uploader.upload(request.getPictures()));
+    manager.merge(product);
+    return ResponseEntity.ok().build();
+  }
 
-    @PostMapping
-    public ResponseEntity<Void> newProduct(@RequestBody @Valid NewProductRequest request,
-        @AuthenticationPrincipal AuthenticatedUser authenticatedUser) {
-        User user = authenticatedUser.getUser();
-        Product product = request.toModel(manager, user);
-        manager.persist(product);
-        return ResponseEntity.ok().build();
+  @PostMapping("/{id}/opinioes")
+  public ResponseEntity<Void> addOpinion(
+      @PathVariable Long id,
+      @RequestBody NewOpinionRequest request,
+      @AuthenticationPrincipal AuthenticatedUser authenticatedUser) {
+    User user = authenticatedUser.getUser();
+    Product product = findProductById(id);
+    if (product.belongsTo(user)) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "Não pode opinar sobre o próprio produto.");
     }
+    product.addOpinion(request.toModel(user, product));
+    manager.merge(product);
+    return ResponseEntity.ok().build();
+  }
 
-    @PostMapping("/{id}/imagens")
-    public ResponseEntity<Void> addPictures(@PathVariable Long id, @Valid NewPicturesRequest request,
-        @AuthenticationPrincipal AuthenticatedUser authenticatedUser) {
-        User user = authenticatedUser.getUser();
-        Product product = findProductById(id);
-        if (!product.belongsTo(user)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Acesso negado");
-        }
-        product.addPictures(uploader.upload(request.getPictures()));
-        manager.merge(product);
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("/{id}/opinioes")
-    public ResponseEntity<Void> addOpinion(@PathVariable Long id, @RequestBody NewOpinionRequest request,
-        @AuthenticationPrincipal AuthenticatedUser authenticatedUser) {
-        User user = authenticatedUser.getUser();
-        Product product = findProductById(id);
-        if (product.belongsTo(user)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Não pode opinar sobre o próprio produto.");
-        }
-        product.addOpinion(request.toModel(user, product));
-        manager.merge(product);
-        return ResponseEntity.ok().build();
-    }
-
-    private Product findProductById(Long id) {
-        return Optional.ofNullable(manager.find(Product.class, id))
-            .orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND,
-                "Não existe um produto com a id " + id
-            ));
-    }
+  private Product findProductById(Long id) {
+    return Optional.ofNullable(manager.find(Product.class, id))
+        .orElseThrow(
+            () ->
+                new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Não existe um produto com a id " + id));
+  }
 }

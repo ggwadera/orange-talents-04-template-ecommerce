@@ -17,42 +17,40 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final UsersService usersService;
-    private final TokenService tokenService;
+  private final UsersService usersService;
+  private final TokenService tokenService;
 
-    @Autowired
-    public WebSecurityConfig(UsersService usersService, TokenService tokenService) {
-        this.usersService = usersService;
-        this.tokenService = tokenService;
-    }
+  @Autowired
+  public WebSecurityConfig(UsersService usersService, TokenService tokenService) {
+    this.usersService = usersService;
+    this.tokenService = tokenService;
+  }
 
-    @Override
-    @Bean
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
+  @Override
+  @Bean
+  public AuthenticationManager authenticationManagerBean() throws Exception {
+    return super.authenticationManagerBean();
+  }
 
-    @Override
-        protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(usersService).passwordEncoder(new BCryptPasswordEncoder());
-    }
+  @Override
+  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    auth.userDetailsService(usersService).passwordEncoder(new BCryptPasswordEncoder());
+  }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/usuarios").permitAll()
-                .antMatchers("/api/auth/**").permitAll()
-                .anyRequest().authenticated()
-            .and()
-                .cors().disable()
-                .csrf().disable()
-            .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and()
-                .addFilterBefore(new JwtAuthenticationFilter(tokenService, usersService),
-                    UsernamePasswordAuthenticationFilter.class
-                )
-            .exceptionHandling()
-                .authenticationEntryPoint(new JwtAuthenticationEntryPoint());
-    }
+  @Override
+  protected void configure(HttpSecurity http) throws Exception {
+    http
+      .authorizeRequests()
+        .antMatchers(HttpMethod.POST, "/usuarios").permitAll()
+        .antMatchers("/api/auth/**").permitAll()
+        .anyRequest().authenticated()
+      .and()
+        .cors().disable()
+        .csrf().disable()
+      .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+      .and().addFilterBefore(new JwtAuthenticationFilter(tokenService, usersService),
+            UsernamePasswordAuthenticationFilter.class
+        )
+      .exceptionHandling().authenticationEntryPoint(new JwtAuthenticationEntryPoint());
+  }
 }

@@ -10,13 +10,14 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UniqueValue {
 
-    String message() default "já existe um(a) ${domainClass.getSimpleName()} com o valor ${validatedValue}";
+  String message() default
+      "já existe um(a) ${domainClass.getSimpleName()} com o valor ${validatedValue}";
 
-    Class<?>[] groups() default {};
+  Class<?>[] groups() default {};
 
-    Class<? extends Payload>[] payload() default {};
+  Class<? extends Payload>[] payload() default {};
 
-    String fieldName();
+  String fieldName();
 
-    Class<?> domainClass();
+  Class<?> domainClass();
 }

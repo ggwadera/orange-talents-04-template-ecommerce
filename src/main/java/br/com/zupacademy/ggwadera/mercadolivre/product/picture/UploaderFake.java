@@ -11,10 +11,12 @@ import java.util.stream.Collectors;
 @Component
 public class UploaderFake implements Uploader {
 
-    @Override
-    public Set<String> upload(Collection<MultipartFile> pictures) {
-        return pictures.stream()
-            .map(picture -> "https://fake.site/" + UUID.randomUUID() + "_" + picture.getOriginalFilename())
-            .collect(Collectors.toSet());
-    }
+  @Override
+  public Set<String> upload(Collection<MultipartFile> pictures) {
+    return pictures.stream()
+        .map(
+            picture ->
+                "https://fake.site/" + UUID.randomUUID() + "_" + picture.getOriginalFilename())
+        .collect(Collectors.toSet());
+  }
 }

@@ -10,17 +10,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class UsersService implements UserDetailsService {
 
-    private final UserRepository userRepository;
+  private final UserRepository userRepository;
 
-    @Autowired
-    public UsersService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+  @Autowired
+  public UsersService(UserRepository userRepository) {
+    this.userRepository = userRepository;
+  }
 
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return userRepository.findByEmail(email)
-            .map(AuthenticatedUser::new)
-            .orElseThrow(() -> new UsernameNotFoundException("Não foi encontrado nenhum usuário com o email: " + email));
-    }
+  @Override
+  public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    return userRepository
+        .findByEmail(email)
+        .map(AuthenticatedUser::new)
+        .orElseThrow(
+            () ->
+                new UsernameNotFoundException(
+                    "Não foi encontrado nenhum usuário com o email: " + email));
+  }
 }

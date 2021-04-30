@@ -9,34 +9,33 @@ import javax.validation.constraints.Positive;
 
 public class NewCategoryRequest {
 
-    @NotBlank
-    @UniqueValue(domainClass = Category.class, fieldName = "name")
-    private String name;
+  @NotBlank
+  @UniqueValue(domainClass = Category.class, fieldName = "name")
+  private String name;
 
-    @Positive
-    @ExistsById(domainClass = Category.class, optional = true)
-    private Long parentCategoryId;
+  @Positive
+  @ExistsById(domainClass = Category.class, optional = true)
+  private Long parentCategoryId;
 
-    public String getName() {
-        return name;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public Long getParentCategoryId() {
-        return parentCategoryId;
-    }
+  public Long getParentCategoryId() {
+    return parentCategoryId;
+  }
 
-    public void setParentCategoryId(Long parentCategoryId) {
-        this.parentCategoryId = parentCategoryId;
-    }
+  public void setParentCategoryId(Long parentCategoryId) {
+    this.parentCategoryId = parentCategoryId;
+  }
 
-    public Category toModel(EntityManager manager) {
-        if (parentCategoryId == null) return new Category(name);
-        Category parent = manager.find(Category.class, parentCategoryId);
-        return new Category(name, parent);
-    }
-
+  public Category toModel(EntityManager manager) {
+    if (parentCategoryId == null) return new Category(name);
+    Category parent = manager.find(Category.class, parentCategoryId);
+    return new Category(name, parent);
+  }
 }

@@ -16,13 +16,12 @@ import javax.validation.Valid;
 @Transactional
 public class NewCategoryController {
 
-    @PersistenceContext
-    private EntityManager manager;
+  @PersistenceContext private EntityManager manager;
 
-    @PostMapping
-    public ResponseEntity<Void> newCategory(@RequestBody @Valid NewCategoryRequest request) {
-        Category category = request.toModel(manager);
-        manager.persist(category);
-        return ResponseEntity.ok().build();
-    }
+  @PostMapping
+  public ResponseEntity<Void> newCategory(@RequestBody @Valid NewCategoryRequest request) {
+    Category category = request.toModel(manager);
+    manager.persist(category);
+    return ResponseEntity.ok().build();
+  }
 }

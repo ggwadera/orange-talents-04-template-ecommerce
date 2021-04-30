@@ -7,14 +7,13 @@ import java.util.List;
 
 public class NewPicturesRequest {
 
-    @NotEmpty
-    private List<MultipartFile> pictures;
+  @NotEmpty private List<MultipartFile> pictures;
 
-    public List<MultipartFile> getPictures() {
-        return pictures;
-    }
+  public List<MultipartFile> getPictures() {
+    return pictures;
+  }
 
-    public void setPictures(List<MultipartFile> pictures) {
-        this.pictures = pictures;
-    }
+  public void setPictures(List<MultipartFile> pictures) {
+    this.pictures = pictures;
+  }
 }

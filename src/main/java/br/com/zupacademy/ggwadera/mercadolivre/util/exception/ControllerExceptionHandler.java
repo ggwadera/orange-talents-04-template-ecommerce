@@ -14,22 +14,20 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class ControllerExceptionHandler {
 
-    private final MessageSource messageSource;
+  private final MessageSource messageSource;
 
-    public ControllerExceptionHandler(MessageSource messageSource) {
-        this.messageSource = messageSource;
-    }
+  public ControllerExceptionHandler(MessageSource messageSource) {
+    this.messageSource = messageSource;
+  }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public List<ErrorResponse> handleFieldErrors(
-        MethodArgumentNotValidException exception
-    ) {
-        return exception.getBindingResult()
-            .getFieldErrors()
-            .stream()
-            .map(e -> new ErrorResponse(e.getField(), messageSource.getMessage(e, LocaleContextHolder.getLocale())))
-            .collect(Collectors.toList());
-    }
-
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public List<ErrorResponse> handleFieldErrors(MethodArgumentNotValidException exception) {
+    return exception.getBindingResult().getFieldErrors().stream()
+        .map(
+            e ->
+                new ErrorResponse(
+                    e.getField(), messageSource.getMessage(e, LocaleContextHolder.getLocale())))
+        .collect(Collectors.toList());
+  }
 }

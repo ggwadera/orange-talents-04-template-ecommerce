@@ -7,6 +7,5 @@ import java.util.Set;
 
 public interface Uploader {
 
-    Set<String> upload(Collection<MultipartFile> pictures);
-
+  Set<String> upload(Collection<MultipartFile> pictures);
 }

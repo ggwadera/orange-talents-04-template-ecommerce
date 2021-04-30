@@ -13,16 +13,16 @@ import javax.validation.Valid;
 @RequestMapping("/usuarios")
 public class NewUserController {
 
-    private final UserRepository userRepository;
+  private final UserRepository userRepository;
 
-    @Autowired
-    public NewUserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+  @Autowired
+  public NewUserController(UserRepository userRepository) {
+    this.userRepository = userRepository;
+  }
 
-    @PostMapping
-    public ResponseEntity<Void> newUser(@RequestBody @Valid NewUserRequest request) {
-        userRepository.save(request.toModel());
-        return ResponseEntity.ok().build();
-    }
+  @PostMapping
+  public ResponseEntity<Void> newUser(@RequestBody @Valid NewUserRequest request) {
+    userRepository.save(request.toModel());
+    return ResponseEntity.ok().build();
+  }
 }

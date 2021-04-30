@@ -9,13 +9,14 @@ import java.lang.annotation.*;
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ExistsById {
-    String message() default "não existe um(a) ${domainClass.getSimpleName()} com o id ${validatedValue}";
+  String message() default
+      "não existe um(a) ${domainClass.getSimpleName()} com o id ${validatedValue}";
 
-    Class<?>[] groups() default {};
+  Class<?>[] groups() default {};
 
-    Class<? extends Payload>[] payload() default {};
+  Class<? extends Payload>[] payload() default {};
 
-    Class<?> domainClass();
+  Class<?> domainClass();
 
-    boolean optional() default false;
+  boolean optional() default false;
 }

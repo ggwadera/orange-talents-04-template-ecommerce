@@ -16,24 +16,26 @@ import java.util.Collections;
 import java.util.Map;
 
 @RestController
-@RequestMapping(value = "/api/auth", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(
+    value = "/api/auth",
+    consumes = MediaType.APPLICATION_JSON_VALUE,
+    produces = MediaType.APPLICATION_JSON_VALUE)
 public class AuthenticationController {
 
-    private final AuthenticationManager authManager;
-    private final TokenService tokenService;
+  private final AuthenticationManager authManager;
+  private final TokenService tokenService;
 
-    @Autowired
-    public AuthenticationController(AuthenticationManager authManager,
-        TokenService tokenService) {
-        this.authManager = authManager;
-        this.tokenService = tokenService;
-    }
+  @Autowired
+  public AuthenticationController(AuthenticationManager authManager, TokenService tokenService) {
+    this.authManager = authManager;
+    this.tokenService = tokenService;
+  }
 
-    @PostMapping
-    public ResponseEntity<Map<String, String>> authenticate(@RequestBody @Valid LoginDTO loginInfo) {
-        UsernamePasswordAuthenticationToken authenticationToken = loginInfo.toAuthentication();
-        Authentication authentication = authManager.authenticate(authenticationToken);
-        String jwt = tokenService.generateToken(authentication);
-        return ResponseEntity.ok(Collections.singletonMap("jwt", jwt));
-    }
+  @PostMapping
+  public ResponseEntity<Map<String, String>> authenticate(@RequestBody @Valid LoginDTO loginInfo) {
+    UsernamePasswordAuthenticationToken authenticationToken = loginInfo.toAuthentication();
+    Authentication authentication = authManager.authenticate(authenticationToken);
+    String jwt = tokenService.generateToken(authentication);
+    return ResponseEntity.ok(Collections.singletonMap("jwt", jwt));
+  }
 }

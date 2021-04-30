@@ -10,29 +10,27 @@ import javax.validation.constraints.NotNull;
 @Entity
 public class Category {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @NaturalId
-    @Column(nullable = false)
-    private String name;
+  @NaturalId
+  @Column(nullable = false)
+  private String name;
 
-    @ManyToOne
-    private Category parent;
+  @ManyToOne private Category parent;
 
-    @Deprecated
-    public Category() {
-    }
+  @Deprecated
+  public Category() {}
 
-    public Category(@NotBlank String name) {
-        Assert.hasLength(name, "nome não pode estar em branco");
-        this.name = name;
-    }
+  public Category(@NotBlank String name) {
+    Assert.hasLength(name, "nome não pode estar em branco");
+    this.name = name;
+  }
 
-    public Category(@NotBlank String name, @NotNull Category parent) {
-        this(name);
-        Assert.notNull(parent, "categoria mãe não pode ser nula");
-        this.parent = parent;
-    }
+  public Category(@NotBlank String name, @NotNull Category parent) {
+    this(name);
+    Assert.notNull(parent, "categoria mãe não pode ser nula");
+    this.parent = parent;
+  }
 }

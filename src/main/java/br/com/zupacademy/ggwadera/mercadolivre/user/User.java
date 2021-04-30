@@ -15,58 +15,57 @@ import java.util.Objects;
 @Entity
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @NaturalId
-    @Column(nullable = false)
-    private String email;
+  @NaturalId
+  @Column(nullable = false)
+  private String email;
 
-    @Column(nullable = false)
-    private String password;
+  @Column(nullable = false)
+  private String password;
 
-    @Generated(GenerationTime.INSERT)
-    @Column(nullable = false, columnDefinition = "datetime default current_timestamp")
-    private LocalDateTime createdAt;
+  @Generated(GenerationTime.INSERT)
+  @Column(nullable = false, columnDefinition = "datetime default current_timestamp")
+  private LocalDateTime createdAt;
 
-    @Deprecated
-    public User() {
-    }
+  @Deprecated
+  public User() {}
 
-    public User(@NotBlank @Email String email, @NotNull PlaintextPassword password) {
-        Assert.hasLength(email, "login não pode estar em branco");
-        Assert.notNull(password, "senha não pode ser nula");
-        this.email = email;
-        this.password = password.hash();
-    }
+  public User(@NotBlank @Email String email, @NotNull PlaintextPassword password) {
+    Assert.hasLength(email, "login não pode estar em branco");
+    Assert.notNull(password, "senha não pode ser nula");
+    this.email = email;
+    this.password = password.hash();
+  }
 
-    public Long getId() {
-        return id;
-    }
+  public Long getId() {
+    return id;
+  }
 
-    public String getEmail() {
-        return email;
-    }
+  public String getEmail() {
+    return email;
+  }
 
-    public String getPassword() {
-        return password;
-    }
+  public String getPassword() {
+    return password;
+  }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
+  public LocalDateTime getCreatedAt() {
+    return createdAt;
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return getId().equals(user.getId()) && getEmail().equals(user.getEmail());
-    }
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    User user = (User) o;
+    return getId().equals(user.getId()) && getEmail().equals(user.getEmail());
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getEmail());
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(getId(), getEmail());
+  }
 }
