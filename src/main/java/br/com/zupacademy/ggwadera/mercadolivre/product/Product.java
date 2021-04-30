@@ -13,10 +13,7 @@ import org.springframework.util.Assert;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
@@ -60,14 +57,32 @@ public class Product {
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
   private User owner;
 
-  public boolean belongsTo(User user) {
-    return this.owner.equals(user);
+  public Set<ProductPicture> getPictures() {
+    return pictures;
   }
 
-  public void addPictures(Collection<String> picturesUri) {
-    Set<ProductPicture> pictures =
-        picturesUri.stream().map(uri -> new ProductPicture(uri, this)).collect(Collectors.toSet());
-    this.pictures.addAll(pictures);
+  public Set<ProductOpinion> getOpinions() {
+    return opinions;
+  }
+
+  public BigDecimal getValue() {
+    return value;
+  }
+
+  public Integer getQuantity() {
+    return quantity;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public Set<ProductFeature> getFeatures() {
+    return features;
+  }
+
+  public Set<Question> getQuestions() {
+    return questions;
   }
 
   public User getOwner() {
@@ -80,6 +95,35 @@ public class Product {
 
   public String getName() {
     return name;
+  }
+
+  public Category getCategory() {
+    return category;
+  }
+
+  public LocalDateTime getCreatedAt() {
+    return createdAt;
+  }
+
+  public boolean belongsTo(User user) {
+    return this.owner.equals(user);
+  }
+
+  public void addPictures(Collection<String> picturesUri) {
+    Set<ProductPicture> pictures =
+        picturesUri.stream().map(uri -> new ProductPicture(uri, this)).collect(Collectors.toSet());
+    this.pictures.addAll(pictures);
+  }
+
+  public Double getAverageRating() {
+    OptionalDouble average =
+        this.opinions.stream().mapToInt(ProductOpinion::getRating).asDoubleStream().average();
+    if (average.isEmpty()) return null;
+    return average.getAsDouble();
+  }
+
+  public int getTotalRatings() {
+    return this.opinions.size();
   }
 
   @Override
