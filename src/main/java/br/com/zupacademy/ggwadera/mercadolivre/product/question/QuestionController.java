@@ -1,11 +1,13 @@
-package br.com.zupacademy.ggwadera.mercadolivre.product;
+package br.com.zupacademy.ggwadera.mercadolivre.product.question;
 
+import br.com.zupacademy.ggwadera.mercadolivre.product.Emails;
+import br.com.zupacademy.ggwadera.mercadolivre.product.Product;
 import br.com.zupacademy.ggwadera.mercadolivre.security.AuthenticatedUser;
 import br.com.zupacademy.ggwadera.mercadolivre.user.User;
+import br.com.zupacademy.ggwadera.mercadolivre.util.validation.ExistsById;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
@@ -17,22 +19,26 @@ import javax.validation.Valid;
 @RequestMapping("/produtos")
 @Transactional
 @Validated
-public class ProductController {
+public class QuestionController {
+
+  private final Emails emails;
 
   @PersistenceContext private EntityManager manager;
 
-  @InitBinder(value = "newProduct")
-  public void init(WebDataBinder binder) {
-    binder.addValidators(new DistinctFeatureNameValidator());
+  public QuestionController(Emails emails) {
+    this.emails = emails;
   }
 
-  @PostMapping
-  public ResponseEntity<Void> newProduct(
-      @RequestBody @Valid NewProductRequest request,
+  @PostMapping("/{id}/perguntas")
+  public ResponseEntity<Void> addQuestion(
+      @PathVariable @ExistsById(domainClass = Product.class) Long id,
+      @RequestBody @Valid NewQuestionRequest request,
       @AuthenticationPrincipal AuthenticatedUser authenticatedUser) {
     User user = authenticatedUser.getUser();
-    Product product = request.toModel(manager, user);
-    manager.persist(product);
+    Product product = manager.find(Product.class, id);
+    Question question = request.toModel(user, product);
+    manager.persist(question);
+    emails.sendNewQuestionEmail(question);
     return ResponseEntity.ok().build();
   }
 }

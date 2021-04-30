@@ -5,11 +5,14 @@ import br.com.zupacademy.ggwadera.mercadolivre.product.feature.NewProductFeature
 import br.com.zupacademy.ggwadera.mercadolivre.product.feature.ProductFeature;
 import br.com.zupacademy.ggwadera.mercadolivre.product.opinion.ProductOpinion;
 import br.com.zupacademy.ggwadera.mercadolivre.product.picture.ProductPicture;
+import br.com.zupacademy.ggwadera.mercadolivre.product.question.Question;
 import br.com.zupacademy.ggwadera.mercadolivre.user.User;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.util.Assert;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
@@ -18,6 +21,12 @@ import java.util.stream.Collectors;
 
 @Entity
 public class Product {
+
+  @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "product")
+  private final Set<ProductPicture> pictures = new HashSet<>();
+
+  @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "product")
+  private final Set<ProductOpinion> opinions = new HashSet<>();
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,20 +47,21 @@ public class Product {
   @ManyToOne(optional = false)
   private Category category;
 
+  @CreationTimestamp
+  @Column(nullable = false)
+  private LocalDateTime createdAt;
+
   @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "product")
   private Set<ProductFeature> features;
 
   @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "product")
-  private final Set<ProductPicture> pictures = new HashSet<>();
-
-  @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "product")
-  private final Set<ProductOpinion> opinions = new HashSet<>();
+  private Set<Question> questions = new HashSet<>();
 
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
-  private User user;
+  private User owner;
 
   public boolean belongsTo(User user) {
-    return this.user.equals(user);
+    return this.owner.equals(user);
   }
 
   public void addPictures(Collection<String> picturesUri) {
@@ -60,8 +70,8 @@ public class Product {
     this.pictures.addAll(pictures);
   }
 
-  public void addOpinion(ProductOpinion opinion) {
-    this.opinions.add(opinion);
+  public User getOwner() {
+    return this.owner;
   }
 
   public Long getId() {
@@ -92,7 +102,7 @@ public class Product {
     private String description;
     private Category category;
     private Collection<NewProductFeatureRequest> features;
-    private User user;
+    private User owner;
 
     public Builder() {}
 
@@ -127,7 +137,7 @@ public class Product {
     }
 
     public Builder withUser(User user) {
-      this.user = user;
+      this.owner = user;
       return this;
     }
 
@@ -142,14 +152,14 @@ public class Product {
       Assert.notNull(this.category, "categoria é obrigatória");
       Assert.notEmpty(this.features, "característica é obrigatório");
       Assert.isTrue(this.features.size() >= 3, "deve ter no mínimo 3 características");
-      Assert.notNull(this.user, "deve estar atrelado a um usuário");
+      Assert.notNull(this.owner, "deve estar atrelado a um usuário");
       Product product = new Product();
       product.name = this.name;
       product.value = this.value;
       product.quantity = this.quantity;
       product.description = this.description;
       product.category = this.category;
-      product.user = this.user;
+      product.owner = this.owner;
       product.features =
           this.features.stream().map(f -> f.toModel(product)).collect(Collectors.toSet());
       return product;
