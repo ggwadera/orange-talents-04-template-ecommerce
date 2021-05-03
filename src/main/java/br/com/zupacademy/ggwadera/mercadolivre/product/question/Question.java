@@ -38,12 +38,20 @@ public class Question {
     this.product = product;
   }
 
+  public Long getId() {
+    return id;
+  }
+
   public String getTitle() {
     return title;
   }
 
   public User getUser() {
     return user;
+  }
+
+  public LocalDateTime getCreatedAt() {
+    return createdAt;
   }
 
   public Product getProduct() {

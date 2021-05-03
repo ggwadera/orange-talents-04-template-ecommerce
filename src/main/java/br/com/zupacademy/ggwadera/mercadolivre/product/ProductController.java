@@ -2,6 +2,7 @@ package br.com.zupacademy.ggwadera.mercadolivre.product;
 
 import br.com.zupacademy.ggwadera.mercadolivre.security.AuthenticatedUser;
 import br.com.zupacademy.ggwadera.mercadolivre.user.User;
+import br.com.zupacademy.ggwadera.mercadolivre.util.validation.ExistsById;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
@@ -34,5 +35,12 @@ public class ProductController {
     Product product = request.toModel(manager, user);
     manager.persist(product);
     return ResponseEntity.ok().build();
+  }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<ProductResponse> findProduct(
+      @PathVariable @ExistsById(domainClass = Product.class) Long id) {
+    Product product = manager.find(Product.class, id);
+    return ResponseEntity.ok(new ProductResponse(product));
   }
 }
