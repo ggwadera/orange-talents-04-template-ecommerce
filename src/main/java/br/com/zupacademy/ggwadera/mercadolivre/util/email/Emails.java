@@ -1,7 +1,7 @@
-package br.com.zupacademy.ggwadera.mercadolivre.product;
+package br.com.zupacademy.ggwadera.mercadolivre.util.email;
 
 import br.com.zupacademy.ggwadera.mercadolivre.product.question.Question;
-import br.com.zupacademy.ggwadera.mercadolivre.util.email.Mailer;
+import br.com.zupacademy.ggwadera.mercadolivre.purchase.Purchase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
@@ -24,5 +24,14 @@ public class Emails {
         "Mercado Livre",
         "pergunta@mercadolivre.com.br",
         question.getProductOwner().getEmail());
+  }
+
+  public void sendNewPurchaseEmail(Purchase purchase) {
+    mailer.send(
+        String.format("<html>Nova venda do seu produto %s</html>", purchase.getProduct().getName()),
+        "Nova Venda",
+        "Mercado Livre",
+        "vendas@mercadolivre.com.br",
+        purchase.getProductOwner().getEmail());
   }
 }
