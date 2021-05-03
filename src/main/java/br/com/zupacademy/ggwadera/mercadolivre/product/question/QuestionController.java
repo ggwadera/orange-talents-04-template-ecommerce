@@ -1,9 +1,9 @@
 package br.com.zupacademy.ggwadera.mercadolivre.product.question;
 
-import br.com.zupacademy.ggwadera.mercadolivre.product.Emails;
 import br.com.zupacademy.ggwadera.mercadolivre.product.Product;
 import br.com.zupacademy.ggwadera.mercadolivre.security.AuthenticatedUser;
 import br.com.zupacademy.ggwadera.mercadolivre.user.User;
+import br.com.zupacademy.ggwadera.mercadolivre.util.email.Emails;
 import br.com.zupacademy.ggwadera.mercadolivre.util.validation.ExistsById;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

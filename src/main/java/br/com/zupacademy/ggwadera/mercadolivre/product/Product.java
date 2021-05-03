@@ -11,6 +11,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.util.Assert;
 
 import javax.persistence.*;
+import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -18,12 +19,6 @@ import java.util.stream.Collectors;
 
 @Entity
 public class Product {
-
-  @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "product")
-  private final Set<ProductPicture> pictures = new HashSet<>();
-
-  @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "product")
-  private final Set<ProductOpinion> opinions = new HashSet<>();
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,7 +44,13 @@ public class Product {
   private LocalDateTime createdAt;
 
   @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "product")
-  private Set<ProductFeature> features;
+  private final Set<ProductPicture> pictures = new HashSet<>();
+
+  @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "product")
+  private final Set<ProductOpinion> opinions = new HashSet<>();
+
+  @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "product")
+  private Set<ProductFeature> features = new HashSet<>();
 
   @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "product")
   private Set<Question> questions = new HashSet<>();
@@ -137,6 +138,13 @@ public class Product {
   @Override
   public int hashCode() {
     return Objects.hash(id, name);
+  }
+
+  public boolean reduceInventory(@Positive Integer quantity) {
+    Assert.isTrue(quantity > 0, "Quantidade deve ser positiva.");
+    if (this.quantity < quantity) return false;
+    this.quantity -= quantity;
+    return true;
   }
 
   public static final class Builder {
